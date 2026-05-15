@@ -24,7 +24,7 @@ COPY scripts/ scripts/
 COPY --from=frontend /src/openjarvis/server/static src/openjarvis/server/static/
 
 RUN pip install --no-cache-dir uv && \
-    uv pip install --system ".[server,inference-cloud]"
+    uv pip install --system -e ".[server,inference-cloud]"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage 3: Lean runtime image
