@@ -14,7 +14,10 @@ from typing import Any, Dict, List, Optional, Union
 
 from openjarvis.core.types import StepType, Trace
 from openjarvis.learning.routing._utils import classify_query
-from openjarvis.traces.store import TraceStore
+try:
+    from openjarvis.traces.store import TraceStore
+except ImportError:
+    TraceStore = None  # type: ignore
 
 
 def _format_toml_value(value: Any) -> str:
