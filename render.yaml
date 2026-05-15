@@ -1,0 +1,48 @@
+# render.yaml — Deploy OpenJarvis to Render.com
+# Docs: https://render.com/docs/blueprint-spec
+#
+# How to use:
+#   1. Push your repo to GitHub
+#   2. Go to render.com → New → Blueprint
+#   3. Connect your repo → Render detects this file automatically
+#   4. Set your API key in the Environment tab (see envVars below)
+
+services:
+  - type: web
+    name: openjarvis
+    runtime: docker
+    dockerfilePath: ./deploy/cloud/Dockerfile.cloud
+    # Build context is the repo root
+    dockerContext: .
+    plan: free           # "starter" ($7/mo) for always-on; free spins down after 15min
+
+    healthCheckPath: /health
+
+    envVars:
+      # ── Pick ONE inference provider and set its key ──────────────────────
+      # Groq (free, fast — recommended for free tier):
+      - key: GROQ_API_KEY
+        sync: false      # Set this in Render dashboard, not here
+
+      # OpenAI:
+      # - key: OPENAI_API_KEY
+      #   sync: false
+
+      # Anthropic:
+      # - key: ANTHROPIC_API_KEY
+      #   sync: false
+
+      # Gemini:
+      # - key: GEMINI_API_KEY
+      #   sync: false
+
+      # ── Optional: lock the server with a bearer token ────────────────────
+      # - key: OPENJARVIS_API_KEY
+      #   generateValue: true    # Render auto-generates a random secret
+
+      # ── Optional: override the model ────────────────────────────────────
+      # - key: OPENJARVIS_MODEL
+      #   value: "llama-3.3-70b-versatile"
+
+    # Render free tier: 512 MB RAM, 0.1 CPU, Portland region
+    # For production bump to "starter" or "standard"

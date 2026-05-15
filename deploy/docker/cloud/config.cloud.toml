@@ -1,0 +1,59 @@
+# OpenJarvis — Cloud Deployment Config
+# Drop this at: ~/.openjarvis/config.toml  (inside the container)
+# The Docker entrypoint copies it automatically when OPENJARVIS_CLOUD=1 is set.
+#
+# Supports: Groq (free), OpenAI, Anthropic, Gemini
+# Set ONE of the matching env vars below:
+#   GROQ_API_KEY        → fastest / cheapest (recommended for Render free tier)
+#   OPENAI_API_KEY      → GPT-4o-mini / GPT-4o
+#   ANTHROPIC_API_KEY   → Claude Haiku / Sonnet
+#   GEMINI_API_KEY      → Gemini Flash
+
+# ── 1. Inference Engine ────────────────────────────────────────────────────────
+[engine]
+default = "cloud"
+
+# Groq: free, OpenAI-compatible.  Set GROQ_API_KEY and OPENAI_BASE_URL below.
+# If you're using OpenAI or Anthropic directly, you can leave this section as-is.
+[engine.cloud]
+# No extra fields needed — driver picks up env vars automatically.
+
+# ── 2. Default Model ───────────────────────────────────────────────────────────
+[intelligence]
+# Groq models (fastest / free tier):
+#   llama-3.3-70b-versatile  |  llama3-8b-8192  |  mixtral-8x7b-32768
+# OpenAI:
+#   gpt-4o-mini  |  gpt-4o
+# Anthropic:
+#   claude-haiku-4-5  |  claude-sonnet-4-6
+# Gemini:
+#   gemini-2.5-flash
+default_model = "llama-3.3-70b-versatile"   # change to match your API key
+
+# ── 3. Agent ───────────────────────────────────────────────────────────────────
+[agent]
+default_agent = "simple"           # "orchestrator" for tool-calling (uses more tokens)
+max_turns     = 8
+context_from_memory = false        # set true only if you add a memory backend
+
+# ── 4. Server ──────────────────────────────────────────────────────────────────
+[server]
+host = "0.0.0.0"
+port = 8000
+cors_origins = ["*"]               # tighten to your frontend URL in production
+
+# ── 5. Telemetry (off in cloud) ────────────────────────────────────────────────
+[telemetry]
+enabled = false
+
+# ── 6. Learning (off in cloud) ─────────────────────────────────────────────────
+[learning]
+enabled = false
+
+# ── 7. Memory (SQLite — ephemeral on Render free tier) ────────────────────────
+[memory]
+default_backend = "sqlite"
+
+[tools.storage]
+default_backend = "sqlite"
+db_path = "/tmp/openjarvis/memory.db"
